@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slayd Yaratish — Onlayn bepul taqdimot yaratish</title>
+<meta name="description" content="Slayd yaratish — bepul onlayn taqdimot yaratish vositasi. Chiroyli slaydlar bir necha daqiqada.">
+<meta name="keywords" content="slayd yaratish,taqdimot yaratish,prezentatsiya,bepul slayd,onlayn slayd">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',system-ui,sans-serif;background:#020617;margin:0}
+  .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1)}
+  .grad{background:linear-gradient(135deg,#818cf8,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+  .lift{transition:all .2s}.lift:hover{transform:translateY(-4px)}
+  [contenteditable]:focus{outline:none}
+  .el-sel{outline:2px solid #6366f1}
+</style>
+</head>
+<body class="text-white">
+
+<div id="landing" class="min-h-screen relative overflow-hidden">
+  <div class="orb" style="width:600px;height:600px;background:#6366f1;opacity:.3;top:-200px;left:-100px"></div>
+  <div class="orb" style="width:600px;height:600px;background:#ec4899;opacity:.2;bottom:-200px;right:-100px"></div>
+  <nav class="relative z-10 flex justify-between items-center px-6 md:px-10 py-6">
+    <div class="text-xl font-bold">Slayd Yaratish<span class="text-indigo-400">.</span></div>
+    <button onclick="openEditor()" class="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm transition">Boshlash</button>
+  </nav>
+  <main class="relative z-10 max-w-5xl mx-auto px-6 md:px-10 pt-16 text-center">
+    <h1 class="text-4xl md:text-7xl font-extrabold tracking-tight leading-tight">
+      Slayd yaratish<br><span class="grad">bir necha daqiqada</span>
+    </h1>
+    <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto">Chiroyli taqdimotlarni onlayn, bepul, oson yaratasiz.</p>
+    <button onclick="openEditor()" class="mt-8 px-8 py-4 rounded-xl bg-indigo-500 hover:bg-indigo-400 font-semibold lift">Bepul boshlash →</button>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+      <div class="glass rounded-2xl p-6 lift"><div class="text-4xl mb-3">⚡</div><h3 class="font-bold text-lg">Tez va oson</h3><p class="text-slate-400 text-sm mt-2">Bir necha daqiqada tayyor</p></div>
+      <div class="glass rounded-2xl p-6 lift"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold text-lg">Chiroyli dizayn</h3><p class="text-slate-400 text-sm mt-2">Professional natija</p></div>
+      <div class="glass rounded-2xl p-6 lift"><div class="text-4xl mb-3">🚀</div><h3 class="font-bold text-lg">Bepul</h3><p class="text-slate-400 text-sm mt-2">Cheklovsiz foydalanish</p></div>
+    </div>
+  </main>
+</div>
+
+<div id="editor" class="hidden h-screen flex-col">
+  <header class="flex items-center gap-2 px-3 py-2.5 border-b border-white/10 shrink-0">
+    <button onclick="closeEditor()" class="text-sm px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition">← Orqaga</button>
+    <span class="font-bold ml-1 hidden sm:inline">Slayd Yaratish<span class="text-indigo-400">.</span></span>
+    <div class="flex-1"></div>
+    <button onclick="addText()" class="text-sm px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition">Matn</button>
+    <button onclick="addShape()" class="text-sm px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition">Shakl</button>
+    <button onclick="delEl()" class="text-sm px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition text-red-400">O'chirish</button>
+    <button onclick="present()" class="text-sm px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 font-medium transition">Taqdimot</button>
+  </header>
+  <div class="flex-1 flex overflow-hidden">
+    <aside class="w-32 md:w-52 border-r border-white/10 p-3 overflow-y-auto shrink-0">
+      <div id="slideList" class="space-y-2"></div>
+      <button onclick="addSlide()" class="w-full py-2 rounded-lg border-2 border-dashed border-white/20 hover:border-indigo-400 text-sm mt-2 transition">+ Slayd</button>
+    </aside>
+    <main class="flex-1 flex items-start justify-center p-4 md:p-8 bg-slate-950 overflow-auto">
+      <div id="canvasWrap" class="w-full max-w-4xl"><div id="canvas" class="relative bg-white rounded-lg shadow-2xl" style="width:960px;height:540px;transform-origin:top left"></div></div>
+    </main>
+  </div>
+</div>
+
+<div id="present" class="hidden fixed inset-0 bg-black z-50 flex items-center justify-center">
+  <div id="presentCanvas" class="relative bg-white rounded-lg shadow-2xl" style="width:90vw;max-width:1200px;aspect-ratio:16/9"></div>
+  <div class="absolute bottom-6 text-white/40 text-sm" id="presentCounter"></div>
+  <button onclick="exitPresent()" class="absolute top-6 right-6 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition">Chiqish (Esc)</button>
+</div>
+
+<script>
+const W=960,H=540;
+let slides=JSON.parse(localStorage.getItem('slayd_data')||'null')||[{bg:'#ffffff',elements:[]}];
+let current=0,selected=null,pIdx=0;
+const $=id=>document.getElementById(id);
+const save=()=>localStorage.setItem('slayd_data',JSON.stringify(slides));
+
+function openEditor(){$('landing').classList.add('hidden');$('editor').classList.remove('hidden');$('editor').classList.add('flex');rSlides();rCanvas();}
+function closeEditor(){$('editor').classList.add('hidden');$('editor').classList.remove('flex');$('landing').classList.remove('hidden');}
+function addSlide(){slides.push({bg:'#ffffff',elements:[]});current=slides.length-1;save();rSlides();rCanvas();}
+function selectSlide(i){current=i;selected=null;rSlides();rCanvas();}
+function delSlide(i,e){e.stopPropagation();if(slides.length<=1)return;slides.splice(i,1);if(current>=slides.length)current=slides.length-1;save();rSlides();rCanvas();}
+function delEl(){if(selected===null)return;slides[current].elements.splice(selected,1);selected=null;save();rCanvas();}
+function addText(){slides[current].elements.push({type:'text',text:'Matn kiriting',x:80,y:100,w:500,h:100,fontSize:48,color:'#111827',bold:true});save();rCanvas();}
+function addShape(){slides[current].elements.push({type:'shape',x:380,y:180,w:200,h:200,color:'#6366f1',radius:24});save();rCanvas();}
+
+function rSlides(){
+  $('slideList').innerHTML=slides.map((s,i)=>`
+    <div onclick="selectSlide(${i})" class="relative aspect-video rounded-lg cursor-pointer transition ${i===current?'ring-2 ring-indigo-500':'ring-1 ring-white/10 hover:ring-white/30'}" style="background:${s.bg}">
+      <span class="absolute top-1 left-1 text-xs bg-black/60 text-white px-1.5 py-0.5 rounded">${i+1}</span>
+      ${slides.length>1?`<button onclick="delSlide(${i},event)" class="absolute top-1 right-1 w-5 h-5 rounded bg-black/60 hover:bg-red-500 text-white text-xs">×</button>`:''}
+    </div>`).join('');
+}
+
+function rCanvas(){
+  const c=$('canvas'),wrap=$('canvasWrap'),s=slides[current];
+  c.style.background=s.bg;
+  const wr=wrap.getBoundingClientRect();
+  const scale=Math.min(wr.width/W,(window.innerHeight-140)/H,1);
+  c.style.transform=`scale(${scale})`;
+  wrap.style.height=(H*scale)+'px';
+  wrap.style.width=(W*scale)+'px';
+  c.innerHTML=s.elements.map((el,idx)=>{
+    const sel=selected===idx?'el-sel':'';
+    const pos=`position:absolute;left:${el.x}px;top:${el.y}px;width:${el.w}px;height:${el.h}px;cursor:move;`;
+    if(el.type==='text')return `<div data-idx="${idx}" class="${sel}" style="${pos}">
+      <div contenteditable data-edit="${idx}" style="width:100%;height:100%;font-size:${el.fontSize}px;color:${el.color};font-weight:${el.bold?'700':'400'};display:flex;align-items:center;">${el.text}</div></div>`;
+    return `<div data-idx="${idx}" class="${sel}" style="${pos}"><div style="width:100%;height:100%;background:${el.color};border-radius:${el.radius||12}px"></div></div>`;
+  }).join('');
+  c.querySelectorAll('[data-idx]').forEach(d=>{
+    const idx=+d.dataset.idx;
+    d.onpointerdown=e=>{
+      if(e.target.isContentEditable){selected=idx;return;}
+      e.stopPropagation();selected=idx;rCanvas();
+      const cRect=c.getBoundingClientRect(),sc=cRect.width/W;
+      const st={mx:e.clientX,my:e.clientY,ex:s.elements[idx].x,ey:s.elements[idx].y};
+      const mv=ev=>{s.elements[idx].x=st.ex+(ev.clientX-st.mx)/sc;s.elements[idx].y=st.ey+(ev.clientY-st.my)/sc;d.style.left=s.elements[idx].x+'px';d.style.top=s.elements[idx].y+'px';};
+      const up=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);save();};
+      document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);
+    };
+  });
+  c.querySelectorAll('[data-edit]').forEach(d=>{
+    const idx=+d.dataset.edit;
+    d.onblur=()=>{s.elements[idx].text=d.textContent;save();};
+  });
+  c.onclick=e=>{if(e.target===c){selected=null;rCanvas();}};
+}
+
+function present(){pIdx=0;$('present').classList.remove('hidden');rPresent();}
+function exitPresent(){$('present').classList.add('hidden');}
+function rPresent(){
+  const pc=$('presentCanvas'),s=slides[pIdx];
+  pc.style.background=s.bg;
+  pc.innerHTML=`<div style="width:${W}px;height:${H}px;position:relative;transform-origin:top left" id="pInner">`+
+    s.elements.map(el=>`<div style="position:absolute;left:${el.x}px;top:${el.y}px;width:${el.w}px;height:${el.h}px;">${
+      el.type==='text'?`<div style="width:100%;height:100%;font-size:${el.fontSize}px;color:${el.color};font-weight:${el.bold?'700':'400'};display:flex;align-items:center;">${el.text}</div>`:`<div style="width:100%;height:100%;background:${el.color};border-radius:${el.radius||12}px"></div>`
+    }</div>`).join('')+`</div>`;
+  requestAnimationFrame(()=>{
+    const inner=$('pInner'),rect=pc.getBoundingClientRect();
+    inner.style.transform=`scale(${rect.width/W})`;
+  });
+  $('presentCounter').textContent=`${pIdx+1} / ${slides.length}`;
+}
+
+document.addEventListener('keydown',e=>{
+  if($('present').classList.contains('hidden'))return;
+  if(e.key==='ArrowRight'||e.key===' '){pIdx=Math.min(pIdx+1,slides.length-1);rPresent();}
+  if(e.key==='ArrowLeft'){pIdx=Math.max(pIdx-1,0);rPresent();}
+  if(e.key==='Escape')exitPresent();
+});
+window.addEventListener('resize',()=>{if(!$('editor').classList.contains('hidden'))rCanvas();});
+</script>
+</body>
+      </html>
